@@ -21,7 +21,7 @@ api = tweepy.API(auth)
 
 #=============================
 
-hashtag = "ExtinctionRebellion"
+hashtag = "cdnpoli"
 
 query = "%23{}+-filter:retweets".format(hashtag)
 
@@ -29,6 +29,7 @@ db = sqlite3.connect("tweets.db")
 
 # determine the highest and lowest tweet id in the database
 # so that we can avoid duplicate tweets
+count = 0
 count = int(db.execute("SELECT COUNT(DISTINCT id) FROM Hashtag WHERE hashtag=? COLLATE NOCASE;", [hashtag]).fetchone()[0])
 if count > 0:
     min_id = int(db.execute("SELECT MIN(id) FROM Hashtag WHERE hashtag=? COLLATE NOCASE;", [hashtag]).fetchone()[0]) - 1
