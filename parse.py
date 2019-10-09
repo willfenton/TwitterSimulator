@@ -7,14 +7,20 @@ import json
 import time
 import sqlite3
 import tweepy
+import datetime
 
 #=============================
 
-hashtags = ["TuesdayThoughts"]
+# hashtags = ["TuesdayThoughts"]
+hashtags = ["WednesdayWisdom"]
 # hashtags = ["HipHopAwards"]
 # hashtags = ["cdnpoli", "elxn43", "leadersdebate2019"]
 
 #=============================
+
+def log(text):
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"[{timestamp}] {text}")
 
 def get_tables(db):
     results = db.execute("SELECT name FROM sqlite_master WHERE type='table';")
@@ -42,14 +48,14 @@ def create_tables(hashtags, db):
         if table_name in tables:
             return
 
-    db.execute(f"CREATE TABLE [{tweet_table_name}] \
-        (id INTEGER, body TEXT, PRIMARY KEY(id));")
-    db.execute(f"CREATE TABLE [{hashtag_table_name}] \
-        (id INTEGER, hashtag TEXT, start_index INTEGER, end_index INTEGER, FOREIGN KEY(id) REFERENCES Tweet);")
-    db.execute(f"CREATE TABLE [{url_table_name}] \
-        (id INTEGER, url TEXT, start_index INTEGER, end_index INTEGER, FOREIGN KEY(id) REFERENCES Tweet);")
-    db.execute(f"CREATE TABLE [{mention_table_name}] \
-        (id INTEGER, mention TEXT, start_index INTEGER, end_index INTEGER, FOREIGN KEY(id) REFERENCES Tweet);")
+    db.execute(f"""CREATE TABLE [{tweet_table_name}] 
+        (id INTEGER, body TEXT, PRIMARY KEY(id));""")
+    db.execute(f"""CREATE TABLE [{hashtag_table_name}] 
+        (id INTEGER, hashtag TEXT, start_index INTEGER, end_index INTEGER, FOREIGN KEY(id) REFERENCES Tweet);""")
+    db.execute(f"""CREATE TABLE [{url_table_name}] 
+        (id INTEGER, url TEXT, start_index INTEGER, end_index INTEGER, FOREIGN KEY(id) REFERENCES Tweet);""")
+    db.execute(f"""CREATE TABLE [{mention_table_name}] 
+        (id INTEGER, mention TEXT, start_index INTEGER, end_index INTEGER, FOREIGN KEY(id) REFERENCES Tweet);""")
 
 def get_api_keys():
     with open("api_key.txt", 'r') as f:
@@ -67,7 +73,7 @@ def get_cursor(hashtags, db, num_tweets=100, result_type="recent", tweet_mode="e
     s = "+OR+%23".join(sorted([hashtag.lower() for hashtag in hashtags]))
     query = f"%23{s}+-filter:retweets"
 
-    print(query)
+    log(f"Query: {query}")
     
     hashtag_string = get_hashtag_string(hashtags)
 
@@ -92,8 +98,8 @@ def limit_handled(cursor, db):
             yield cursor.next()
         except Exception as e:
             db.commit()
-            print(e)
-            print("Sleeping for 15 minutes")
+            log(e)
+            log("Sleeping for 15 minutes")
             time.sleep(15 * 60)
 
 def insert_tweet(tweet, hashtag_string, db):
@@ -123,21 +129,22 @@ def insert_tweet(tweet, hashtag_string, db):
 
 #=============================
 
-hashtag_string = get_hashtag_string(hashtags)
+if __name__ == "__main__":
+    hashtag_string = get_hashtag_string(hashtags)
 
-db = sqlite3.connect("tweets.db")
-create_tables(hashtags, db)
+    db = sqlite3.connect("tweets.db")
+    create_tables(hashtags, db)
 
-api_key, api_secret = get_api_keys()
-auth = tweepy.OAuthHandler(api_key, api_secret)
-api = tweepy.API(auth)
+    api_key, api_secret = get_api_keys()
+    auth = tweepy.OAuthHandler(api_key, api_secret)
+    api = tweepy.API(auth)
 
-cursor = get_cursor(hashtags, db)
+    cursor = get_cursor(hashtags, db)
 
-for tweet in limit_handled(cursor.items(), db):
-    insert_tweet(tweet, hashtag_string, db)
+    for tweet in limit_handled(cursor.items(), db):
+        insert_tweet(tweet, hashtag_string, db)
 
-db.commit()
-db.close()
+    db.commit()
+    db.close()
 
 #=============================

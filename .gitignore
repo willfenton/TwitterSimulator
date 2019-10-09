@@ -1,4 +1,5 @@
 *.txt
+*.npz
 *.db
 *.json
 

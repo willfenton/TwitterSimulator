@@ -4,14 +4,24 @@
 #=============================
 
 import sqlite3
+from parse import get_hashtag_string
+
+#=============================
+
+# hashtags = ["TuesdayThoughts"]
+# hashtags = ["WednesdayWisdom"]
+# hashtags = ["HipHopAwards"]
+hashtags = ["cdnpoli", "elxn43", "leadersdebate2019"]
 
 #=============================
 
 db = sqlite3.connect("tweets.db")
 
-result = db.execute("SELECT body FROM tweet;")
+hashtag_string = get_hashtag_string(hashtags)
 
-with open("tweets.txt", 'w') as f:
+result = db.execute(f"SELECT body FROM [Tweets-{hashtag_string}];")
+
+with open(f"dataset/{hashtag_string}.txt", 'w') as f:
     while True:
         try:
             text = result.fetchone()[0]
