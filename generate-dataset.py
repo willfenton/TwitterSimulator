@@ -19,15 +19,17 @@ db = sqlite3.connect("tweets.db")
 
 hashtag_string = get_hashtag_string(hashtags)
 
-result = db.execute(f"SELECT body FROM [Tweets-{hashtag_string}];")
+tweets = db.execute(f"SELECT body FROM [Tweets-{hashtag_string}];")
 
 with open(f"dataset/{hashtag_string}.txt", 'w') as f:
     while True:
         try:
-            text = result.fetchone()[0]
+            text = tweets.fetchone()[0]
             f.write(text)
             f.write("\n\n<|endoftext|>\n\n")
         except:
             break
 
 db.close()
+
+#=============================
