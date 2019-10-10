@@ -11,8 +11,10 @@ import datetime
 
 #=============================
 
+hashtags = ["WorldMentalHealthDay", "WorldMentalHealthDay2019", "MentalHealthAwarenessDay"]
+# hashtags = ["LetsGoOilers"]
 # hashtags = ["TuesdayThoughts"]
-hashtags = ["WednesdayWisdom"]
+# hashtags = ["WednesdayWisdom"]
 # hashtags = ["HipHopAwards"]
 # hashtags = ["cdnpoli", "elxn43", "leadersdebate2019"]
 
