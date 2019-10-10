@@ -8,10 +8,10 @@ from parse import get_hashtag_string
 
 #=============================
 
-hashtags = ["WorldMentalHealthDay", "WorldMentalHealthDay2019", "MentalHealthAwarenessDay"]
+# hashtags = ["WorldMentalHealthDay", "WorldMentalHealthDay2019", "MentalHealthAwarenessDay"]
 # hashtags = ["TuesdayThoughts"]
 # hashtags = ["WednesdayWisdom"]
-# hashtags = ["HipHopAwards"]
+hashtags = ["HipHopAwards"]
 # hashtags = ["cdnpoli", "elxn43", "leadersdebate2019"]
 
 #=============================
